@@ -20,7 +20,7 @@ class App extends React.Component {
         const chatManager = new Chatkit.ChatManager({
             instanceLocator,
             userId: 'Toby',
-            tokenProvider: newChatkit.tokenProvider({
+            tokenProvider: new Chatkit.TokenProvider({
                 url: tokenUrl
             })
         })
