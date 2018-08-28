@@ -1,6 +1,6 @@
 import React from 'react'
 
-function message(props) {
+function Message(props) {
         return (
             <div className="message">
                 <div className="message-username">{props.user}</div>
