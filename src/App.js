@@ -5,7 +5,7 @@ import SendMessage from '../src/components/SendMessageForm'
 import RoomList from '../src/components/RoomList'
 import NewRoomForm from '../src/components/NewRoomForm'
 
-import { tokenUrl, instanceLocator } from './config'
+import { tokenUrl, instanceLocator } from '/config'
 
 class App extends React.Component {
 
