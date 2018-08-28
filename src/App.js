@@ -32,7 +32,7 @@ class App extends React.Component {
                 hooks: {
                     onNewMessage: message => {
                         this.setState({
-                          messages:[...this.state.messages, messages]
+                          messages: [...this.state.messages, messages]
                         })
                     }
                 }
