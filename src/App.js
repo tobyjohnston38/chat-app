@@ -1,7 +1,7 @@
 import React from 'react'
 import Chatkit from '@pusher/chatkit'
 import MessageList from '../src/components/MessageList'
-import SendMessage from '../src/components/SendMessageForm'
+import SendMessageForm from '../src/components/SendMessageForm'
 import RoomList from '../src/components/RoomList'
 import NewRoomForm from '../src/components/NewRoomForm'
 
@@ -14,6 +14,7 @@ class App extends React.Component {
       this.state = {
         messages:[]
       }
+      this.sendMessage = this.sendMessage.bind(this)
     }
 
     componentDidMount() {
@@ -27,7 +28,8 @@ class App extends React.Component {
 
         chatManager.connect()
         .then(currentUser => {
-            currentUser.subscribeToRoom({
+            this.currentUser = currentUser
+            this.currentUser.subscribeToRoom({
                 roomId: 14868724,
                 hooks: {
                     onNewMessage: message => {
@@ -40,12 +42,19 @@ class App extends React.Component {
         })
     }
 
+    sendMessage(text) {
+      this.currentUser.sendMessage({
+        text: text,
+        roomId: 14868724
+      })
+    }
+
     render() {
         return (
             <div className="app">
                 <RoomList />
                 <MessageList messeges={this.state.messages} />
-                <SendMessage />
+                <SendMessageForm sendMessage={this.sendMessage} />
                 <NewRoomForm />
             </div>
         );
