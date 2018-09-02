@@ -1,26 +1,28 @@
 import React from 'react'
 import Chatkit from '@pusher/chatkit'
-import MessageList from '../src/components/MessageList'
-import SendMessageForm from '../src/components/SendMessageForm'
-import RoomList from '../src/components/RoomList'
-import NewRoomForm from '../src/components/NewRoomForm'
+import MessageList from './components/MessageList'
+import SendMessageForm from './components/SendMessageForm'
+import RoomList from './components/RoomList'
+import NewRoomForm from './components/NewRoomForm'
 
 import { tokenUrl, instanceLocator } from './config'
 
 class App extends React.Component {
 
     constructor() {
-      super()
-      this.state = {
-        messages:[]
-      }
-      this.sendMessage = this.sendMessage.bind(this)
+        super()
+        this.state = {
+            messages: [],
+            joinableRooms: [],
+            joinedRooms: []
+        }
+        this.sendMessage = this.sendMessage.bind(this)
     }
 
     componentDidMount() {
         const chatManager = new Chatkit.ChatManager({
             instanceLocator,
-            userId: 'Toby',
+            userId: 'perborgen',
             tokenProvider: new Chatkit.TokenProvider({
                 url: tokenUrl
             })
@@ -29,31 +31,43 @@ class App extends React.Component {
         chatManager.connect()
         .then(currentUser => {
             this.currentUser = currentUser
+
+            this.currentUser.getJoinableRooms()
+            .then(joinableRooms => {
+                this.setState({
+                    joinableRooms,
+                    joinedRooms: this.currentUser.rooms
+                })
+            })
+            .catch(err => console.log('error on joinableRooms: ', err))
+
             this.currentUser.subscribeToRoom({
-                roomId: 14868724,
+                roomId: 9434230,
                 hooks: {
                     onNewMessage: message => {
                         this.setState({
-                          messages: [...this.state.messages, message]
+                            messages: [...this.state.messages, message]
                         })
                     }
                 }
             })
         })
+        .catch(err => console.log('error on connecting: ', err))
+
     }
 
     sendMessage(text) {
-      this.currentUser.sendMessage({
-        text: text,
-        roomId: 14868724
-      })
+        this.currentUser.sendMessage({
+            text,
+            roomId: 9434230
+        })
     }
 
     render() {
         return (
             <div className="app">
-                <RoomList />
-                <MessageList messeges={this.state.messages} />
+                <RoomList rooms={[...this.state.joinableRooms, ...this.state.joinedRooms]} />
+                <MessageList messages={this.state.messages} />
                 <SendMessageForm sendMessage={this.sendMessage} />
                 <NewRoomForm />
             </div>
